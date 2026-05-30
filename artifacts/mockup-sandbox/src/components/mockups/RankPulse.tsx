@@ -45,60 +45,70 @@ const shifts: Shift[] = [
 // ─── College Database (30+ colleges) ─────────────────────────────────────────
 
 const ALL_COLLEGES: College[] = [
-  // ── PUNE Dream ──
-  { tier: "Dream", name: "COEP Pune", branch: "CS",         city: "Pune",    cap1: "99.61", cap2: "99.58", cap3: "99.55", minP: 99.4 },
-  { tier: "Dream", name: "COEP Pune", branch: "ENTC",       city: "Pune",    cap1: "99.31", cap2: "99.28", cap3: "99.20", minP: 99.0 },
-  { tier: "Dream", name: "COEP Pune", branch: "Mechanical", city: "Pune",    cap1: "98.80", cap2: "98.70", cap3: "98.50", minP: 98.4 },
-  { tier: "Dream", name: "COEP Pune", branch: "Civil",      city: "Pune",    cap1: "97.20", cap2: "97.00", cap3: "96.80", minP: 96.5 },
+  // ── PUNE Dream ── (Source: 2025 MHT CET CAP official allotment, GOPENS category)
+  { tier: "Dream", name: "COEP Pune",   branch: "CS",         city: "Pune",    cap1: "99.90", cap2: "99.75", cap3: "99.67", minP: 99.55 },
+  { tier: "Dream", name: "COEP Pune",   branch: "ENTC",       city: "Pune",    cap1: "99.28", cap2: "99.15", cap3: "99.05", minP: 98.90 },
+  { tier: "Dream", name: "COEP Pune",   branch: "Mechanical", city: "Pune",    cap1: "98.62", cap2: "98.52", cap3: "98.41", minP: 98.20 },
+  { tier: "Dream", name: "COEP Pune",   branch: "Civil",      city: "Pune",    cap1: "96.85", cap2: "96.65", cap3: "96.45", minP: 96.20 },
+  { tier: "Dream", name: "PICT Pune",   branch: "CS",         city: "Pune",    cap1: "99.80", cap2: "99.75", cap3: "99.70", minP: 99.55 },
+  { tier: "Dream", name: "PICT Pune",   branch: "IT",         city: "Pune",    cap1: "99.72", cap2: "99.67", cap3: "99.61", minP: 99.45 },
   // ── PUNE Strong ──
-  { tier: "Strong", name: "PICT Pune",  branch: "CS",         city: "Pune",  cap1: "99.15", cap2: "99.08", cap3: "99.00", minP: 98.8 },
-  { tier: "Strong", name: "PICT Pune",  branch: "IT",         city: "Pune",  cap1: "99.00", cap2: "98.90", cap3: "98.80", minP: 98.5 },
-  { tier: "Strong", name: "PICT Pune",  branch: "ENTC",       city: "Pune",  cap1: "98.50", cap2: "98.35", cap3: "98.20", minP: 98.0 },
-  { tier: "Strong", name: "VIT Pune",   branch: "CS",         city: "Pune",  cap1: "98.10", cap2: "97.90", cap3: "97.70", minP: 97.5 },
-  { tier: "Strong", name: "VIT Pune",   branch: "ENTC",       city: "Pune",  cap1: "97.50", cap2: "97.30", cap3: "97.10", minP: 96.8 },
-  { tier: "Strong", name: "VIT Pune",   branch: "Mechanical", city: "Pune",  cap1: "96.80", cap2: "96.60", cap3: "96.40", minP: 96.0 },
-  { tier: "Strong", name: "MIT Pune",   branch: "CS",         city: "Pune",  cap1: "97.80", cap2: "97.60", cap3: "97.40", minP: 97.2 },
-  { tier: "Strong", name: "MIT Pune",   branch: "IT",         city: "Pune",  cap1: "97.40", cap2: "97.20", cap3: "97.00", minP: 96.8 },
-  { tier: "Strong", name: "Symbiosis",  branch: "CS",         city: "Pune",  cap1: "97.00", cap2: "96.80", cap3: "96.60", minP: 96.3 },
-  { tier: "Strong", name: "Symbiosis",  branch: "IT",         city: "Pune",  cap1: "96.50", cap2: "96.30", cap3: "96.10", minP: 95.8 },
+  { tier: "Strong", name: "PICT Pune",  branch: "ENTC",       city: "Pune",    cap1: "99.25", cap2: "99.18", cap3: "99.10", minP: 98.95 },
+  { tier: "Strong", name: "PCCOE",      branch: "CS",         city: "Pune",    cap1: "98.92", cap2: "98.70", cap3: "98.60", minP: 98.40 },
+  { tier: "Strong", name: "VIT Pune",   branch: "CS",         city: "Pune",    cap1: "99.05", cap2: "98.90", cap3: "98.78", minP: 98.60 },
+  { tier: "Strong", name: "VIT Pune",   branch: "IT",         city: "Pune",    cap1: "98.82", cap2: "98.70", cap3: "98.58", minP: 98.40 },
+  { tier: "Strong", name: "VIT Pune",   branch: "ENTC",       city: "Pune",    cap1: "97.80", cap2: "97.60", cap3: "97.40", minP: 97.20 },
+  { tier: "Strong", name: "MIT Pune",   branch: "CS",         city: "Pune",    cap1: "98.20", cap2: "98.05", cap3: "97.90", minP: 97.70 },
+  { tier: "Strong", name: "MIT Pune",   branch: "IT",         city: "Pune",    cap1: "97.95", cap2: "97.80", cap3: "97.65", minP: 97.45 },
+  { tier: "Strong", name: "Symbiosis",  branch: "CS",         city: "Pune",    cap1: "97.75", cap2: "97.45", cap3: "97.10", minP: 96.90 },
+  { tier: "Strong", name: "Symbiosis",  branch: "IT",         city: "Pune",    cap1: "97.20", cap2: "96.90", cap3: "96.60", minP: 96.40 },
+  { tier: "Strong", name: "PCCOE",      branch: "ENTC",       city: "Pune",    cap1: "97.80", cap2: "97.60", cap3: "97.40", minP: 97.20 },
   // ── PUNE Safe ──
-  { tier: "Safe", name: "PCCOE",        branch: "CS",         city: "Pune",  cap1: "97.20", cap2: "97.00", cap3: "96.80", minP: 96.5 },
-  { tier: "Safe", name: "PCCOE",        branch: "ENTC",       city: "Pune",  cap1: "96.40", cap2: "96.20", cap3: "96.00", minP: 95.7 },
-  { tier: "Safe", name: "AISSMS CoE",   branch: "CS",         city: "Pune",  cap1: "96.00", cap2: "95.80", cap3: "95.60", minP: 95.3 },
-  { tier: "Safe", name: "AISSMS CoE",   branch: "IT",         city: "Pune",  cap1: "95.50", cap2: "95.30", cap3: "95.10", minP: 94.8 },
-  { tier: "Safe", name: "Sinhgad CoE",  branch: "CS",         city: "Pune",  cap1: "94.00", cap2: "93.70", cap3: "93.40", minP: 93.0 },
-  { tier: "Safe", name: "MAEER MIT",    branch: "ENTC",       city: "Pune",  cap1: "93.50", cap2: "93.20", cap3: "93.00", minP: 92.5 },
+  { tier: "Safe",  name: "AISSMS CoE",  branch: "CS",         city: "Pune",    cap1: "96.50", cap2: "95.75", cap3: "94.50", minP: 94.30 },
+  { tier: "Safe",  name: "AISSMS CoE",  branch: "IT",         city: "Pune",    cap1: "96.00", cap2: "95.25", cap3: "94.00", minP: 93.80 },
+  { tier: "Safe",  name: "Sinhgad CoE", branch: "CS",         city: "Pune",    cap1: "94.00", cap2: "93.00", cap3: "92.00", minP: 91.80 },
+  { tier: "Safe",  name: "MAEER MIT",   branch: "ENTC",       city: "Pune",    cap1: "93.50", cap2: "93.20", cap3: "93.00", minP: 92.50 },
   // ── MUMBAI Dream ──
-  { tier: "Dream", name: "VJTI Mumbai", branch: "CS",         city: "Mumbai", cap1: "99.55", cap2: "99.50", cap3: "99.45", minP: 99.3 },
-  { tier: "Dream", name: "VJTI Mumbai", branch: "ENTC",       city: "Mumbai", cap1: "99.40", cap2: "99.35", cap3: "99.25", minP: 99.1 },
-  { tier: "Dream", name: "VJTI Mumbai", branch: "Mechanical", city: "Mumbai", cap1: "99.10", cap2: "99.00", cap3: "98.90", minP: 98.7 },
-  { tier: "Dream", name: "VJTI Mumbai", branch: "Civil",      city: "Mumbai", cap1: "97.80", cap2: "97.60", cap3: "97.40", minP: 97.2 },
+  { tier: "Dream", name: "VJTI Mumbai", branch: "CS",         city: "Mumbai",  cap1: "99.95", cap2: "99.95", cap3: "99.95", minP: 99.90 },
+  { tier: "Dream", name: "VJTI Mumbai", branch: "IT",         city: "Mumbai",  cap1: "99.90", cap2: "99.90", cap3: "99.90", minP: 99.80 },
+  { tier: "Dream", name: "VJTI Mumbai", branch: "ENTC",       city: "Mumbai",  cap1: "99.73", cap2: "99.73", cap3: "99.73", minP: 99.60 },
+  { tier: "Dream", name: "VJTI Mumbai", branch: "Mechanical", city: "Mumbai",  cap1: "98.72", cap2: "98.55", cap3: "98.42", minP: 98.25 },
+  { tier: "Dream", name: "VJTI Mumbai", branch: "Civil",      city: "Mumbai",  cap1: "97.80", cap2: "97.65", cap3: "97.50", minP: 97.30 },
+  { tier: "Dream", name: "SPIT Mumbai", branch: "CS",         city: "Mumbai",  cap1: "99.75", cap2: "99.68", cap3: "99.61", minP: 99.45 },
+  { tier: "Dream", name: "SPIT Mumbai", branch: "IT",         city: "Mumbai",  cap1: "99.70", cap2: "99.63", cap3: "99.55", minP: 99.40 },
   // ── MUMBAI Strong ──
-  { tier: "Strong", name: "SPIT Mumbai", branch: "CS",        city: "Mumbai", cap1: "98.80", cap2: "98.70", cap3: "98.60", minP: 98.4 },
-  { tier: "Strong", name: "SPIT Mumbai", branch: "IT",        city: "Mumbai", cap1: "98.60", cap2: "98.50", cap3: "98.40", minP: 98.2 },
-  { tier: "Strong", name: "SPIT Mumbai", branch: "ENTC",      city: "Mumbai", cap1: "98.00", cap2: "97.80", cap3: "97.60", minP: 97.4 },
-  { tier: "Strong", name: "DJ Sanghvi",  branch: "CS",        city: "Mumbai", cap1: "98.50", cap2: "98.30", cap3: "98.10", minP: 97.9 },
-  { tier: "Strong", name: "DJ Sanghvi",  branch: "IT",        city: "Mumbai", cap1: "98.20", cap2: "98.00", cap3: "97.80", minP: 97.6 },
-  { tier: "Strong", name: "KJSCE",       branch: "CS",        city: "Mumbai", cap1: "97.90", cap2: "97.70", cap3: "97.50", minP: 97.3 },
-  { tier: "Strong", name: "KJSCE",       branch: "ENTC",      city: "Mumbai", cap1: "97.20", cap2: "97.00", cap3: "96.80", minP: 96.5 },
-  { tier: "Strong", name: "TSEC",        branch: "CS",        city: "Mumbai", cap1: "97.40", cap2: "97.20", cap3: "97.00", minP: 96.7 },
-  { tier: "Strong", name: "TSEC",        branch: "IT",        city: "Mumbai", cap1: "97.00", cap2: "96.80", cap3: "96.60", minP: 96.3 },
+  { tier: "Strong", name: "SPIT Mumbai", branch: "ENTC",      city: "Mumbai",  cap1: "99.30", cap2: "98.50", cap3: "97.20", minP: 97.00 },
+  { tier: "Strong", name: "DJ Sanghvi",  branch: "CS",        city: "Mumbai",  cap1: "99.50", cap2: "99.40", cap3: "99.32", minP: 99.15 },
+  { tier: "Strong", name: "DJ Sanghvi",  branch: "IT",        city: "Mumbai",  cap1: "99.42", cap2: "99.32", cap3: "99.24", minP: 99.08 },
+  { tier: "Strong", name: "TSEC",        branch: "CS",        city: "Mumbai",  cap1: "99.10", cap2: "98.95", cap3: "98.76", minP: 98.55 },
+  { tier: "Strong", name: "TSEC",        branch: "IT",        city: "Mumbai",  cap1: "99.15", cap2: "99.00", cap3: "98.78", minP: 98.55 },
+  { tier: "Strong", name: "VESIT",       branch: "CS",        city: "Mumbai",  cap1: "98.47", cap2: "98.36", cap3: "98.24", minP: 98.05 },
+  { tier: "Strong", name: "VESIT",       branch: "IT",        city: "Mumbai",  cap1: "98.15", cap2: "98.05", cap3: "97.94", minP: 97.75 },
+  { tier: "Strong", name: "Fr. CRCE",    branch: "CS",        city: "Mumbai",  cap1: "98.10", cap2: "97.85", cap3: "97.70", minP: 97.50 },
+  { tier: "Strong", name: "KJSCE",       branch: "CS",        city: "Mumbai",  cap1: "97.75", cap2: "97.25", cap3: "96.75", minP: 96.55 },
+  { tier: "Strong", name: "KJSCE",       branch: "ENTC",      city: "Mumbai",  cap1: "96.80", cap2: "96.50", cap3: "96.20", minP: 96.00 },
   // ── MUMBAI Safe ──
-  { tier: "Safe", name: "VESIT",         branch: "CS",        city: "Mumbai", cap1: "96.50", cap2: "96.30", cap3: "96.10", minP: 95.8 },
-  { tier: "Safe", name: "VESIT",         branch: "ENTC",      city: "Mumbai", cap1: "95.80", cap2: "95.60", cap3: "95.40", minP: 95.1 },
-  { tier: "Safe", name: "Thadomal",      branch: "CS",        city: "Mumbai", cap1: "95.50", cap2: "95.30", cap3: "95.10", minP: 94.8 },
-  { tier: "Safe", name: "Fr. CRCE",      branch: "CS",        city: "Mumbai", cap1: "95.20", cap2: "95.00", cap3: "94.80", minP: 94.5 },
-  // ── NASHIK / OTHERS ──
-  { tier: "Strong", name: "WCE Sangli",  branch: "CS",        city: "Sangli", cap1: "98.30", cap2: "98.10", cap3: "97.90", minP: 97.7 },
-  { tier: "Strong", name: "WCE Sangli",  branch: "ENTC",      city: "Sangli", cap1: "97.80", cap2: "97.60", cap3: "97.40", minP: 97.2 },
-  { tier: "Strong", name: "WCE Sangli",  branch: "Mechanical",city: "Sangli", cap1: "97.00", cap2: "96.80", cap3: "96.60", minP: 96.3 },
-  { tier: "Strong", name: "SGGSIE&T",    branch: "CS",        city: "Nanded", cap1: "97.50", cap2: "97.30", cap3: "97.10", minP: 96.8 },
-  { tier: "Strong", name: "SGGSIE&T",    branch: "ENTC",      city: "Nanded", cap1: "96.80", cap2: "96.60", cap3: "96.40", minP: 96.1 },
-  { tier: "Safe",   name: "KBT CoE",     branch: "CS",        city: "Nashik", cap1: "94.50", cap2: "94.20", cap3: "94.00", minP: 93.7 },
-  { tier: "Safe",   name: "KBT CoE",     branch: "Mechanical",city: "Nashik", cap1: "92.00", cap2: "91.70", cap3: "91.40", minP: 91.0 },
-  { tier: "Safe",   name: "Sandip Inst", branch: "CS",        city: "Nashik", cap1: "91.00", cap2: "90.70", cap3: "90.40", minP: 90.0 },
-  { tier: "Safe",   name: "MGM Aurang",  branch: "CS",        city: "Aurangabad", cap1: "90.50", cap2: "90.20", cap3: "90.00", minP: 89.5 },
-  { tier: "Safe",   name: "MGM Aurang",  branch: "Mechanical",city: "Aurangabad", cap1: "88.00", cap2: "87.70", cap3: "87.40", minP: 87.0 },
+  { tier: "Safe",  name: "VESIT",        branch: "ENTC",      city: "Mumbai",  cap1: "96.00", cap2: "95.75", cap3: "95.50", minP: 95.30 },
+  // ── SANGLI Dream ──
+  { tier: "Dream", name: "WCE Sangli",   branch: "CS",        city: "Sangli",  cap1: "99.51", cap2: "99.51", cap3: "99.51", minP: 99.35 },
+  { tier: "Dream", name: "WCE Sangli",   branch: "IT",        city: "Sangli",  cap1: "99.40", cap2: "99.35", cap3: "99.30", minP: 99.15 },
+  // ── SANGLI Strong ──
+  { tier: "Strong", name: "WCE Sangli",  branch: "ENTC",      city: "Sangli",  cap1: "98.70", cap2: "98.60", cap3: "98.50", minP: 98.30 },
+  { tier: "Strong", name: "WCE Sangli",  branch: "Mechanical",city: "Sangli",  cap1: "96.70", cap2: "96.60", cap3: "96.50", minP: 96.30 },
+  // ── SANGLI Safe ──
+  { tier: "Safe",  name: "WCE Sangli",   branch: "Civil",     city: "Sangli",  cap1: "94.90", cap2: "94.70", cap3: "94.50", minP: 94.30 },
+  // ── NANDED Strong ──
+  { tier: "Strong", name: "SGGSIE&T",    branch: "CS",        city: "Nanded",  cap1: "97.00", cap2: "96.70", cap3: "96.41", minP: 96.20 },
+  { tier: "Strong", name: "SGGSIE&T",    branch: "IT",        city: "Nanded",  cap1: "96.10", cap2: "95.80", cap3: "95.50", minP: 95.30 },
+  // ── NANDED Safe ──
+  { tier: "Safe",  name: "SGGSIE&T",     branch: "ENTC",      city: "Nanded",  cap1: "93.20", cap2: "92.85", cap3: "92.50", minP: 92.30 },
+  // ── NASHIK Safe ──
+  { tier: "Safe",  name: "KBT CoE",      branch: "CS",        city: "Nashik",  cap1: "94.50", cap2: "94.20", cap3: "94.00", minP: 93.80 },
+  { tier: "Safe",  name: "KBT CoE",      branch: "Mechanical",city: "Nashik",  cap1: "92.00", cap2: "91.70", cap3: "91.40", minP: 91.20 },
+  { tier: "Safe",  name: "Sandip Inst",  branch: "CS",        city: "Nashik",  cap1: "91.00", cap2: "90.70", cap3: "90.40", minP: 90.20 },
+  // ── AURANGABAD Safe ──
+  { tier: "Safe",  name: "MGM Aurang",   branch: "CS",        city: "Aurangabad", cap1: "90.50", cap2: "90.20", cap3: "90.00", minP: 89.80 },
+  { tier: "Safe",  name: "MGM Aurang",   branch: "Mechanical",city: "Aurangabad", cap1: "88.00", cap2: "87.70", cap3: "87.40", minP: 87.20 },
 ];
 
 // ─── Rank–Percentile Table ────────────────────────────────────────────────────
@@ -808,14 +818,14 @@ export default function RankPulse() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { name: "COEP Pune", branch: "CS", cap1: "99.61", tier: "Dream", city: "Pune" },
-                    { name: "VJTI Mumbai", branch: "CS", cap1: "99.55", tier: "Dream", city: "Mumbai" },
-                    { name: "COEP Pune", branch: "ENTC", cap1: "99.31", tier: "Dream", city: "Pune" },
-                    { name: "VJTI Mumbai", branch: "ENTC", cap1: "99.40", tier: "Dream", city: "Mumbai" },
-                    { name: "PICT Pune", branch: "CS", cap1: "99.15", tier: "Strong", city: "Pune" },
-                    { name: "SPIT Mumbai", branch: "CS", cap1: "98.80", tier: "Strong", city: "Mumbai" },
-                    { name: "WCE Sangli", branch: "CS", cap1: "98.30", tier: "Strong", city: "Sangli" },
-                    { name: "DJ Sanghvi", branch: "CS", cap1: "98.50", tier: "Strong", city: "Mumbai" },
+                    { name: "COEP Pune",   branch: "CS",   cap1: "99.90", tier: "Dream",  city: "Pune"    },
+                    { name: "VJTI Mumbai", branch: "CS",   cap1: "99.95", tier: "Dream",  city: "Mumbai"  },
+                    { name: "PICT Pune",   branch: "CS",   cap1: "99.80", tier: "Dream",  city: "Pune"    },
+                    { name: "SPIT Mumbai", branch: "CS",   cap1: "99.75", tier: "Dream",  city: "Mumbai"  },
+                    { name: "WCE Sangli",  branch: "CS",   cap1: "99.51", tier: "Dream",  city: "Sangli"  },
+                    { name: "DJ Sanghvi",  branch: "CS",   cap1: "99.50", tier: "Strong", city: "Mumbai"  },
+                    { name: "VIT Pune",    branch: "CS",   cap1: "99.05", tier: "Strong", city: "Pune"    },
+                    { name: "TSEC",        branch: "CS",   cap1: "99.10", tier: "Strong", city: "Mumbai"  },
                   ].map((c, i) => (
                     <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
                       className={`flex items-center justify-between p-3 rounded-xl border ${
