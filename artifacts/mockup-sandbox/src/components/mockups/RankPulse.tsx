@@ -527,32 +527,146 @@ export default function RankPulse() {
 
           {/* ── INTRO ── */}
           {page === "intro" && (
-            <motion.div key="intro" {...pageVariants} className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4">
-              <motion.div animate={{ rotate: [0, 5, -5, 0], y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                className="w-20 h-20 rounded-3xl bg-gradient-to-br from-pink-400/20 to-violet-400/20 border border-white/10 flex items-center justify-center mb-7">
-                <BrainCircuit size={38} className="text-pink-300" />
-              </motion.div>
-              <h1 className="text-6xl md:text-8xl font-black tracking-tighter"
-                style={{ background: "linear-gradient(135deg,#f9a8d4 0%,#c4b5fd 50%,#67e8f9 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                RankPulse AI
-              </h1>
-              <p className="mt-2 text-white/25 tracking-[0.4em] uppercase text-xs">MHT CET 2026 · Percentile Predictor</p>
-              <div className="mt-8 grid grid-cols-3 gap-3 max-w-sm">
-                {[{ icon: Target, label: "Accurate", sub: "Normalization-aware" }, { icon: Zap, label: "Instant", sub: "Real-time calc" }, { icon: BookOpen, label: "30+ Colleges", sub: "CAP rounds included" }].map(({ icon: Icon, label, sub }) => (
-                  <div key={label} className={`${glass} p-4 flex flex-col items-center gap-1`}>
-                    <Icon size={16} className="text-pink-300" />
-                    <div className="text-xs font-bold text-white/80">{label}</div>
-                    <div className="text-[10px] text-white/25 text-center">{sub}</div>
+            <motion.div key="intro" {...pageVariants} className="space-y-5 pb-4">
+
+              {/* Hero */}
+              <div className="flex flex-col items-center text-center pt-6 pb-2 px-4">
+                <motion.div animate={{ rotate: [0, 5, -5, 0], y: [0, -6, 0] }}
+                  transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+                  className="w-18 h-18 rounded-3xl bg-gradient-to-br from-pink-400/20 to-violet-400/20 border border-white/10 flex items-center justify-center mb-6">
+                  <BrainCircuit size={34} className="text-pink-300" />
+                </motion.div>
+                <h1 className="text-6xl md:text-7xl font-black tracking-tighter"
+                  style={{ background: "linear-gradient(135deg,#f9a8d4 0%,#c4b5fd 50%,#67e8f9 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                  RankPulse AI
+                </h1>
+                <p className="mt-2 text-white/25 tracking-[0.4em] uppercase text-xs">MHT CET 2026 · Percentile Predictor</p>
+                <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+                  onClick={() => { playSound(); setPage("shift"); }}
+                  className="mt-7 px-10 py-4 rounded-2xl font-black text-black flex items-center gap-2.5"
+                  style={{ background: "linear-gradient(135deg,#f9a8d4,#c4b5fd,#67e8f9)" }}>
+                  <Sparkles size={17} /> Begin Analysis <ChevronRight size={17} />
+                </motion.button>
+              </div>
+
+              {/* Exam stats strip */}
+              <div className="grid grid-cols-4 gap-3">
+                {[
+                  { value: "11,325", label: "Students appeared", icon: <TrendingUp size={15} className="text-pink-300" /> },
+                  { value: "16", label: "Exam shifts", icon: <Zap size={15} className="text-violet-300" /> },
+                  { value: "196", label: "Highest score", icon: <Trophy size={15} className="text-amber-300" /> },
+                  { value: "5.69%", label: "Avg scored 120+", icon: <Star size={15} className="text-cyan-300" /> },
+                ].map(({ value, label, icon }) => (
+                  <div key={label} className={`${glass} p-4 flex flex-col gap-1.5`}>
+                    <div className="flex items-center gap-1.5">{icon}<span className="text-xs text-white/30">{label}</span></div>
+                    <div className="text-2xl font-black text-white">{value}</div>
                   </div>
                 ))}
               </div>
-              <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                onClick={() => { playSound(); setPage("shift"); }}
-                className="mt-9 px-10 py-4 rounded-2xl font-black text-black flex items-center gap-2.5"
-                style={{ background: "linear-gradient(135deg,#f9a8d4,#c4b5fd,#67e8f9)" }}>
-                <Sparkles size={17} /> Begin Analysis <ChevronRight size={17} />
-              </motion.button>
-              <p className="mt-5 text-white/15 text-xs">8 exam dates · 16 shifts · All categories · 30+ colleges</p>
+
+              {/* Shift difficulty matrix */}
+              <div className={`${glass} p-6`}>
+                <div className="flex items-center gap-2 mb-4">
+                  <BarChart3 size={15} className="text-pink-300" />
+                  <span className="font-black text-base">Shift Difficulty Overview</span>
+                  <div className="ml-auto flex items-center gap-3 text-[10px]">
+                    {[["Easy","bg-emerald-400"],["Moderate","bg-amber-400"],["Hard","bg-rose-400"]].map(([l,c])=>(
+                      <div key={l} className="flex items-center gap-1"><div className={`w-2 h-2 rounded-full ${c}`}/><span className="text-white/30">{l}</span></div>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-8 gap-2">
+                  {shifts.map((s) => (
+                    <div key={s.date} className="flex flex-col gap-1.5">
+                      <div className="text-[10px] text-white/35 font-medium text-center leading-tight">
+                        {s.date.split(" ")[0]}<br />{s.date.split(" ")[1]}
+                      </div>
+                      {([["☀️", s.morning], ["🌙", s.evening]] as const).map(([emoji, info]) => {
+                        const d = info.difficulty;
+                        const bg = d === "Easy" ? "bg-emerald-400/20 border-emerald-400/30 text-emerald-300"
+                          : d === "Moderate" ? "bg-amber-400/20 border-amber-400/30 text-amber-300"
+                          : "bg-rose-400/20 border-rose-400/30 text-rose-300";
+                        return (
+                          <div key={emoji} title={`${emoji === "☀️" ? "Morning" : "Evening"}: ${d} · ${info.above120}% above 120 · Highest ${info.highest}`}
+                            className={`rounded-xl border p-1.5 text-center cursor-default transition-all hover:scale-105 ${bg}`}>
+                            <div className="text-sm leading-none">{emoji}</div>
+                            <div className="text-[9px] font-bold mt-0.5 leading-none">
+                              {d === "Easy" ? "Easy" : d === "Moderate" ? "Mod" : "Hard"}
+                            </div>
+                            <div className="text-[8px] text-white/40 mt-0.5">{info.above120}%</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-white/20 mt-3">Hover each cell for full shift stats · % = students who scored 120+</p>
+              </div>
+
+              {/* How it works */}
+              <div className={`${glass} p-6`}>
+                <div className="flex items-center gap-2 mb-5">
+                  <BookOpen size={15} className="text-pink-300" />
+                  <span className="font-black text-base">How It Works</span>
+                </div>
+                <div className="grid grid-cols-4 gap-3">
+                  {[
+                    { step: "1", title: "Pick your date", desc: "Select the exam date and morning or evening shift you appeared for", color: "from-pink-400/20 to-pink-400/5 border-pink-400/25" },
+                    { step: "2", title: "Choose category", desc: "Select your reservation category — we adjust the percentile accordingly", color: "from-violet-400/20 to-violet-400/5 border-violet-400/25" },
+                    { step: "3", title: "Enter marks", desc: "Enter Physics (50), Chemistry (50) and Mathematics (100) marks", color: "from-blue-400/20 to-blue-400/5 border-blue-400/25" },
+                    { step: "4", title: "Get prediction", desc: "Receive your percentile, rank range, and 30+ college suggestions instantly", color: "from-cyan-400/20 to-cyan-400/5 border-cyan-400/25" },
+                  ].map(({ step, title, desc, color }) => (
+                    <div key={step} className={`p-4 rounded-2xl border bg-gradient-to-br ${color}`}>
+                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black mb-3">{step}</div>
+                      <div className="text-sm font-black text-white/90 mb-1">{title}</div>
+                      <div className="text-[11px] text-white/40 leading-relaxed">{desc}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dream college cutoff preview */}
+              <div className={`${glass} p-6`}>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap size={15} className="text-pink-300" />
+                    <span className="font-black text-base">Top College Cutoffs</span>
+                    <span className="text-[10px] text-white/25 ml-1">CAP Round 1 · 2025 data</span>
+                  </div>
+                  <button onClick={() => { playSound(); setPage("shift"); }}
+                    className="text-xs text-pink-300/60 hover:text-pink-300 flex items-center gap-1 transition-all">
+                    See all 30+ <ChevronRight size={12} />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { name: "COEP Pune", branch: "CS", cap1: "99.61", tier: "Dream", city: "Pune" },
+                    { name: "VJTI Mumbai", branch: "CS", cap1: "99.55", tier: "Dream", city: "Mumbai" },
+                    { name: "COEP Pune", branch: "ENTC", cap1: "99.31", tier: "Dream", city: "Pune" },
+                    { name: "VJTI Mumbai", branch: "ENTC", cap1: "99.40", tier: "Dream", city: "Mumbai" },
+                    { name: "PICT Pune", branch: "CS", cap1: "99.15", tier: "Strong", city: "Pune" },
+                    { name: "SPIT Mumbai", branch: "CS", cap1: "98.80", tier: "Strong", city: "Mumbai" },
+                    { name: "WCE Sangli", branch: "CS", cap1: "98.30", tier: "Strong", city: "Sangli" },
+                    { name: "DJ Sanghvi", branch: "CS", cap1: "98.50", tier: "Strong", city: "Mumbai" },
+                  ].map((c, i) => (
+                    <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                      className={`flex items-center justify-between p-3 rounded-xl border ${
+                        c.tier === "Dream" ? "bg-violet-500/8 border-violet-400/20" : "bg-blue-500/8 border-blue-400/20"
+                      }`}>
+                      <div>
+                        <div className="text-sm font-bold text-white/90">{c.name}</div>
+                        <div className="text-[10px] text-white/35 mt-0.5">{c.branch} · {c.city}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-sm font-black ${c.tier === "Dream" ? "text-violet-300" : "text-blue-300"}`}>{c.cap1}</div>
+                        <div className="text-[9px] text-white/20 mt-0.5">CAP 1 cutoff</div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-white/20 mt-3">Cutoffs are OPEN category · Predict your score to see colleges you're eligible for</p>
+              </div>
+
             </motion.div>
           )}
 
