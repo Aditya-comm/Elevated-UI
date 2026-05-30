@@ -1,12 +1,10 @@
 import express, { type Express } from "express";
 import cors from "cors";
-import pinoHttpModule from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
-const pinoHttp =
-  (pinoHttpModule as unknown as { default?: typeof pinoHttpModule }).default ??
-  pinoHttpModule;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pinoHttp = require("pino-http");
 
 const app: Express = express();
 
