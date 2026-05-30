@@ -854,20 +854,30 @@ export default function RankPulse() {
               <div className={`${glass} p-7`}>
                 <h2 className="text-2xl font-black mb-1">Select Exam Date</h2>
                 <p className="text-white/30 text-sm mb-7">Choose the date you appeared for MHT CET 2026</p>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {shifts.map((s) => (
-                    <motion.button key={s.date} whileHover={{ y: -3, scale: 1.01 }} whileTap={{ scale: 0.98 }}
+                    <motion.button key={s.date} whileHover={{ y: -4, scale: 1.01 }} whileTap={{ scale: 0.98 }}
                       onClick={() => { playSound(); setShiftDate(s.date); setPage("session"); }}
-                      className="p-4 rounded-2xl border bg-white/[0.04] border-white/[0.07] hover:border-white/20 text-left transition-all">
-                      <div className="text-sm font-black text-white/90">{s.date}</div>
-                      <div className="mt-3 space-y-1.5">
+                      className="p-6 rounded-3xl border bg-white/[0.04] border-white/[0.07] hover:border-white/20 hover:bg-white/[0.07] text-left transition-all">
+                      <div className="text-xl font-black text-white/90 mb-4">{s.date}</div>
+                      <div className="space-y-3">
                         {(["Morning", "Evening"] as const).map((label) => {
-                          const d = (label === "Morning" ? s.morning : s.evening).difficulty;
+                          const shift = label === "Morning" ? s.morning : s.evening;
+                          const d = shift.difficulty;
                           return (
-                            <div key={label} className="flex items-center gap-2">
-                              <div className={`w-1.5 h-1.5 rounded-full ${diffDot[d]}`} />
-                              <span className="text-[11px] text-white/35">{label}:</span>
-                              <span className={`text-[11px] font-semibold ${diffText[d]}`}>{d}</span>
+                            <div key={label} className={`p-3 rounded-2xl border bg-gradient-to-r ${diffCard[d]}`}>
+                              <div className="flex items-center justify-between mb-1.5">
+                                <div className="flex items-center gap-2">
+                                  <div className={`w-2 h-2 rounded-full ${diffDot[d]}`} />
+                                  <span className="text-xs font-bold text-white/60">{label}</span>
+                                </div>
+                                <span className={`text-xs font-black ${diffText[d]}`}>{d}</span>
+                              </div>
+                              <div className="flex items-center gap-3 text-[11px] text-white/35">
+                                <span>{shift.above120}% scored 120+</span>
+                                <span className="text-white/15">·</span>
+                                <span>High: {shift.highest}</span>
+                              </div>
                             </div>
                           );
                         })}
