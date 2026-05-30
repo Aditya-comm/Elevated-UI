@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  BrainCircuit, Sparkles, GraduationCap, BarChart3, History,
+  Sparkles, GraduationCap, BarChart3, History,
   Volume2, VolumeX, ChevronRight, ArrowLeft, Trophy, Share2,
   RotateCcw, Trash2, TrendingUp, Zap, Star, Target, Filter,
-  SlidersHorizontal, MapPin, BookOpen, Table2,
+  SlidersHorizontal, MapPin, BookOpen, Table2, Activity,
+  FlameKindling, Crosshair, BrainCircuit,
 } from "lucide-react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -207,51 +208,59 @@ const diffCard: Record<string, string> = {
 };
 
 const tierStyle: Record<Tier, string> = {
-  Dream: "from-violet-500/15 to-pink-500/10 border-violet-400/25",
-  Strong: "from-blue-500/15 to-cyan-500/10 border-blue-400/25",
-  Safe: "from-emerald-500/15 to-teal-500/10 border-emerald-400/25",
+  Dream: "from-orange-500/15 to-amber-500/8 border-orange-400/25",
+  Strong: "from-sky-500/15 to-cyan-500/8 border-sky-400/25",
+  Safe: "from-emerald-500/15 to-teal-500/8 border-emerald-400/25",
 };
 const tierBadge: Record<Tier, string> = {
-  Dream: "bg-violet-400/15 text-violet-300 border-violet-400/30",
-  Strong: "bg-blue-400/15 text-blue-300 border-blue-400/30",
+  Dream: "bg-orange-400/15 text-orange-300 border-orange-400/30",
+  Strong: "bg-sky-400/15 text-sky-300 border-sky-400/30",
   Safe: "bg-emerald-400/15 text-emerald-300 border-emerald-400/30",
 };
 const rankCat: Record<string, string> = {
-  Top: "text-violet-300", High: "text-pink-300", Good: "text-blue-300", Mid: "text-amber-300", Low: "text-white/40",
+  Top: "text-orange-300", High: "text-amber-300", Good: "text-sky-300", Mid: "text-slate-400", Low: "text-white/30",
 };
 
 const STEPS = ["Shift", "Session", "Category", "Marks"];
 const stepMap: Record<Page, number> = { intro: -1, shift: 0, session: 1, category: 2, marks: 3, loading: 4, result: 4, history: -1 };
 
-const glass = "bg-white/[0.04] backdrop-blur-3xl border border-white/[0.08] rounded-[28px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_20px_80px_rgba(0,0,0,0.4)]";
+const glass = "bg-white/[0.035] backdrop-blur-3xl border border-white/[0.07] rounded-[28px] shadow-[inset_0_1px_0_rgba(255,180,60,0.06),0_20px_80px_rgba(0,0,0,0.5)]";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function PercentileGauge({ value }: { value: number }) {
-  const radius = 88; const stroke = 11;
+  const radius = 88; const stroke = 12;
   const nr = radius - stroke / 2;
   const circ = nr * 2 * Math.PI;
   const arc = circ * 0.75;
   const offset = arc - (value / 100) * arc;
-  const color = value >= 99 ? "#c084fc" : value >= 97 ? "#60a5fa" : value >= 95 ? "#34d399" : "#fb923c";
+  const color = value >= 99 ? "#f97316" : value >= 97 ? "#f59e0b" : value >= 95 ? "#38bdf8" : "#34d399";
+  const glow = value >= 99 ? "#f97316" : value >= 97 ? "#f59e0b" : value >= 95 ? "#38bdf8" : "#34d399";
 
   return (
     <div className="relative flex items-center justify-center">
       <svg width={radius * 2} height={radius * 2} className="-rotate-[135deg]">
-        <circle cx={radius} cy={radius} r={nr} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={stroke}
+        <circle cx={radius} cy={radius} r={nr} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={stroke}
           strokeDasharray={`${arc} ${circ - arc}`} strokeLinecap="round" />
+        <circle cx={radius} cy={radius} r={nr - 8} fill="none" stroke="rgba(255,255,255,0.02)" strokeWidth={2}
+          strokeDasharray={`${(nr-8)*2*Math.PI*0.75} ${(nr-8)*2*Math.PI*0.25}`} strokeLinecap="round" />
         <motion.circle cx={radius} cy={radius} r={nr} fill="none" stroke={color} strokeWidth={stroke}
           strokeDasharray={`${arc} ${circ - arc}`} strokeDashoffset={offset} strokeLinecap="round"
           initial={{ strokeDashoffset: arc }} animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.8, ease: "easeOut", delay: 0.3 }}
-          style={{ filter: `drop-shadow(0 0 8px ${color})` }} />
+          style={{ filter: `drop-shadow(0 0 12px ${glow}) drop-shadow(0 0 4px ${glow})` }} />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <motion.div className="text-4xl font-black text-white"
+        <div className="text-[10px] text-white/20 tracking-[0.3em] uppercase mb-1">percentile</div>
+        <motion.div className="text-4xl font-black"
+          style={{ color }}
           initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }}>
           {value.toFixed(2)}
         </motion.div>
-        <div className="text-[10px] text-white/30 tracking-widest uppercase mt-0.5">percentile</div>
+        <motion.div className="text-[10px] text-white/25 mt-1 font-mono"
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
+          {getRank(value)} rank
+        </motion.div>
       </div>
     </div>
   );
@@ -260,7 +269,7 @@ function PercentileGauge({ value }: { value: number }) {
 function Confetti() {
   const pieces = Array.from({ length: 50 }, (_, i) => ({
     id: i, x: Math.random() * 100,
-    color: ["#f472b6","#818cf8","#34d399","#fb923c","#60a5fa"][Math.floor(Math.random() * 5)],
+    color: ["#f97316","#f59e0b","#fbbf24","#38bdf8","#34d399"][Math.floor(Math.random() * 5)],
     size: Math.random() * 7 + 4, delay: Math.random() * 2, duration: Math.random() * 2 + 2,
   }));
   return (
@@ -283,17 +292,18 @@ function StepProgress({ currentStep }: { currentStep: number }) {
         <div key={label} className="flex items-center gap-2">
           <div className="flex flex-col items-center gap-1">
             <motion.div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all duration-500 ${
-              i < currentStep ? "bg-gradient-to-br from-pink-400 to-violet-400 text-white"
-              : i === currentStep ? "bg-white/10 border-2 border-pink-400 text-white"
+              i < currentStep ? "text-black"
+              : i === currentStep ? "bg-white/10 border-2 border-orange-400 text-white"
               : "bg-white/[0.04] border border-white/10 text-white/25"}`}
+              style={i < currentStep ? { background: "linear-gradient(135deg,#f97316,#f59e0b)" } : {}}
               animate={{ scale: i === currentStep ? [1, 1.08, 1] : 1 }}
               transition={{ repeat: i === currentStep ? Infinity : 0, duration: 2 }}>
               {i < currentStep ? "✓" : i + 1}
             </motion.div>
-            <span className={`text-[9px] tracking-wide ${i <= currentStep ? "text-white/50" : "text-white/15"}`}>{label}</span>
+            <span className={`text-[9px] tracking-wide ${i <= currentStep ? "text-orange-300/60" : "text-white/15"}`}>{label}</span>
           </div>
           {i < STEPS.length - 1 && (
-            <div className={`w-8 h-px mb-4 transition-all duration-700 ${i < currentStep ? "bg-gradient-to-r from-pink-400/60 to-violet-400/60" : "bg-white/[0.07]"}`} />
+            <div className={`w-8 h-px mb-4 transition-all duration-700 ${i < currentStep ? "bg-gradient-to-r from-orange-400/60 to-amber-400/60" : "bg-white/[0.07]"}`} />
           )}
         </div>
       ))}
@@ -317,7 +327,7 @@ function WhatIfSimulator({ basePercentile, shiftData, category }: {
   return (
     <div className={`${glass} p-7`}>
       <div className="flex items-center gap-2 mb-1">
-        <SlidersHorizontal size={16} className="text-pink-300" />
+        <SlidersHorizontal size={16} className="text-amber-400" />
         <span className="font-black text-lg">What-if Simulator</span>
         <span className="text-xs text-white/30 ml-1">— drag to see live percentile</span>
       </div>
@@ -327,7 +337,7 @@ function WhatIfSimulator({ basePercentile, shiftData, category }: {
         {([
           { label: "Physics", value: simPhy, setter: setSimPhy, max: 50, color: "from-blue-400 to-cyan-400", bg: "border-blue-400/20" },
           { label: "Chemistry", value: simChem, setter: setSimChem, max: 50, color: "from-emerald-400 to-teal-400", bg: "border-emerald-400/20" },
-          { label: "Mathematics", value: simMath, setter: setSimMath, max: 100, color: "from-pink-400 to-violet-400", bg: "border-pink-400/20" },
+          { label: "Mathematics", value: simMath, setter: setSimMath, max: 100, color: "from-orange-400 to-amber-400", bg: "border-orange-400/20" },
         ] as const).map(({ label, value, setter, max, color, bg }) => (
           <div key={label} className={`p-4 rounded-2xl border bg-white/[0.03] ${bg}`}>
             <div className="flex justify-between text-xs mb-3">
@@ -382,7 +392,7 @@ function MeritTable({ userPercentile }: { userPercentile: number }) {
   return (
     <div className={`${glass} p-7`}>
       <div className="flex items-center gap-2 mb-6">
-        <Table2 size={16} className="text-pink-300" />
+        <Table2 size={16} className="text-amber-400" />
         <span className="font-black text-lg">Merit List Rank Table</span>
       </div>
       <div className="overflow-x-auto">
@@ -404,8 +414,8 @@ function MeritTable({ userPercentile }: { userPercentile: number }) {
                 return userPercentile >= lo && userPercentile < hi;
               })();
               return (
-                <tr key={i} className={`border-b border-white/[0.04] transition-all ${isUser ? "bg-pink-400/10 rounded-xl" : ""}`}>
-                  <td className={`py-2.5 pr-4 font-mono text-xs ${isUser ? "text-pink-300 font-bold" : "text-white/60"}`}>
+                <tr key={i} className={`border-b border-white/[0.04] transition-all ${isUser ? "bg-orange-400/10 rounded-xl" : ""}`}>
+                  <td className={`py-2.5 pr-4 font-mono text-xs ${isUser ? "text-orange-300 font-bold" : "text-white/60"}`}>
                     {isUser && <span className="mr-2">◀</span>}{row.percentile}
                   </td>
                   <td className={`py-2.5 pr-4 font-bold ${isUser ? "text-white" : "text-white/70"}`}>{row.rank}</td>
@@ -450,7 +460,7 @@ export default function RankPulse() {
   const totalMarks = physics + chemistry + maths;
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("rankpulse-v2-history") || "[]");
+    const saved = JSON.parse(localStorage.getItem("cetedge-v1-history") || "[]");
     setHistory(saved);
   }, []);
 
@@ -481,7 +491,7 @@ export default function RankPulse() {
         clearInterval(iv); clearInterval(ti);
         const entry: HistoryEntry = { percentile: target.toFixed(2), marks: totalMarks, shift: shiftDate + " " + session, time: new Date().toLocaleString(), physics, chemistry, maths };
         const updated = [entry, ...history].slice(0, 10);
-        localStorage.setItem("rankpulse-v2-history", JSON.stringify(updated));
+        localStorage.setItem("cetedge-v1-history", JSON.stringify(updated));
         setHistory(updated);
         setTimeout(() => {
           setPage("result");
@@ -493,7 +503,7 @@ export default function RankPulse() {
   };
 
   const handleShare = () => {
-    const text = `🎯 RankPulse AI — MHT CET 2026\nPercentile: ${percentile.toFixed(2)}\nMarks: ${totalMarks}/200 (Phy ${physics} | Chem ${chemistry} | Math ${maths})\nShift: ${shiftDate} ${session} | Category: ${category}\nEst. Rank: ${getRank(percentile)}`;
+    const text = `🎯 CET Edge — MHT CET 2026 Percentile Predictor\nPercentile: ${percentile.toFixed(2)}\nMarks: ${totalMarks}/200 (Phy ${physics} | Chem ${chemistry} | Math ${maths})\nShift: ${shiftDate} ${session} | Category: ${category}\nEst. Rank: ${getRank(percentile)}`;
     navigator.clipboard?.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2500); });
   };
 
@@ -508,29 +518,38 @@ export default function RankPulse() {
   const branches = ["All", "CS", "IT", "ENTC", "Mechanical", "Civil"] as const;
 
   return (
-    <div className="min-h-screen bg-[#06030f] text-white overflow-x-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div className="min-h-screen bg-[#04070f] text-white overflow-x-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       {/* BG */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-60 -left-40 w-[700px] h-[700px] rounded-full" style={{ background: "radial-gradient(circle, rgba(192,38,211,0.10) 0%, transparent 70%)" }} />
-        <div className="absolute -bottom-60 -right-40 w-[700px] h-[700px] rounded-full" style={{ background: "radial-gradient(circle, rgba(109,40,217,0.10) 0%, transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)", backgroundSize: "60px 60px" }} />
+        <div className="absolute -top-80 -left-60 w-[900px] h-[900px] rounded-full" style={{ background: "radial-gradient(circle, rgba(249,115,22,0.09) 0%, transparent 65%)" }} />
+        <div className="absolute -bottom-60 -right-40 w-[700px] h-[700px] rounded-full" style={{ background: "radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 65%)" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full" style={{ background: "radial-gradient(circle, rgba(245,158,11,0.04) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0 opacity-[0.018]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)", backgroundSize: "52px 52px" }} />
+        <div className="absolute inset-0 opacity-[0.008]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px)", backgroundSize: "8px 8px" }} />
       </div>
 
       {showConfetti && <Confetti />}
 
       <div className="relative z-10 max-w-5xl mx-auto px-4 py-5">
         {/* Navbar */}
-        <div className={`${glass} px-5 py-3 flex items-center justify-between sticky top-4 z-50 mb-1`}>
-          <button onClick={() => setPage("intro")} className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-pink-400/20 to-violet-400/20 border border-white/10 flex items-center justify-center">
-              <BrainCircuit size={14} className="text-pink-300" />
+        <div className="px-5 py-3 flex items-center justify-between sticky top-4 z-50 mb-1 rounded-[28px] border border-white/[0.07] backdrop-blur-3xl"
+          style={{ background: "linear-gradient(135deg, rgba(249,115,22,0.06) 0%, rgba(4,7,15,0.85) 40%, rgba(14,165,233,0.04) 100%)", boxShadow: "inset 0 1px 0 rgba(255,180,60,0.08), 0 8px 40px rgba(0,0,0,0.6)" }}>
+          <button onClick={() => setPage("intro")} className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center relative overflow-hidden"
+              style={{ background: "linear-gradient(135deg,#f97316,#f59e0b)" }}>
+              <Crosshair size={15} className="text-black" strokeWidth={2.5} />
             </div>
-            <span className="font-black text-base tracking-tight">RankPulse<span className="text-pink-300"> AI</span></span>
+            <div className="flex flex-col leading-none">
+              <span className="font-black text-sm tracking-tight">
+                CET<span style={{ background: "linear-gradient(90deg,#f97316,#f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}> Edge</span>
+              </span>
+              <span className="text-[8px] text-white/20 tracking-[0.2em] uppercase">MHT CET 2026</span>
+            </div>
           </button>
           <div className="flex items-center gap-1">
             <button onClick={() => setPage("history")} className="px-3 py-1.5 rounded-xl text-xs text-white/40 hover:text-white hover:bg-white/5 transition-all flex items-center gap-1.5">
               <History size={13} /><span>History</span>
-              {history.length > 0 && <span className="w-4 h-4 rounded-full bg-pink-400/25 text-pink-300 text-[10px] flex items-center justify-center">{history.length}</span>}
+              {history.length > 0 && <span className="w-4 h-4 rounded-full bg-orange-400/25 text-orange-300 text-[10px] flex items-center justify-center">{history.length}</span>}
             </button>
             <button onClick={() => setSound(!sound)} className="w-7 h-7 rounded-xl hover:bg-white/5 flex items-center justify-center text-white/35 hover:text-white transition-all">
               {sound ? <Volume2 size={14} /> : <VolumeX size={14} />}
@@ -547,49 +566,84 @@ export default function RankPulse() {
             <motion.div key="intro" {...pageVariants} className="space-y-5 pb-4">
 
               {/* Hero */}
-              <div className="flex flex-col items-center text-center pt-6 pb-2 px-4">
-                <motion.div animate={{ rotate: [0, 5, -5, 0], y: [0, -6, 0] }}
-                  transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                  className="w-18 h-18 rounded-3xl bg-gradient-to-br from-pink-400/20 to-violet-400/20 border border-white/10 flex items-center justify-center mb-6">
-                  <BrainCircuit size={34} className="text-pink-300" />
-                </motion.div>
-                <h1 className="text-6xl md:text-7xl font-black tracking-tighter"
-                  style={{ background: "linear-gradient(135deg,#f9a8d4 0%,#c4b5fd 50%,#67e8f9 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  RankPulse AI
-                </h1>
-                <p className="mt-2 text-white/25 tracking-[0.4em] uppercase text-xs">MHT CET 2026 · Percentile Predictor</p>
-                <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                  onClick={() => { playSound(); setPage("shift"); }}
-                  className="mt-7 px-10 py-4 rounded-2xl font-black text-black flex items-center gap-2.5"
-                  style={{ background: "linear-gradient(135deg,#f9a8d4,#c4b5fd,#67e8f9)" }}>
-                  <Sparkles size={17} /> Begin Analysis <ChevronRight size={17} />
-                </motion.button>
+              <div className="relative pt-8 pb-4 px-4">
+                {/* Decorative large text watermark */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden select-none">
+                  <span className="text-[160px] font-black tracking-tighter opacity-[0.025] text-white leading-none">EDGE</span>
+                </div>
 
-                {/* 30-40 word description */}
-                <p className="mt-5 text-white/35 text-sm leading-relaxed max-w-lg">
-                  Enter your MHT CET 2026 marks, select your shift and category — we apply shift-level normalization, density correction, and 2025 CAP data to predict your percentile and matching colleges instantly.
-                </p>
-              </div>
+                <div className="relative flex flex-col md:flex-row items-center gap-8">
+                  {/* Left: Brand */}
+                  <div className="flex flex-col items-center md:items-start text-center md:text-left flex-1">
+                    {/* Logo cluster */}
+                    <div className="relative mb-6">
+                      {/* Outer ring */}
+                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
+                        className="w-24 h-24 rounded-full border border-orange-400/20 absolute inset-0 -m-2" />
+                      <motion.div animate={{ rotate: -360 }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+                        className="w-20 h-20 rounded-full border border-amber-400/15 absolute inset-0 -m-0" />
+                      {/* Core */}
+                      <div className="w-20 h-20 rounded-2xl flex items-center justify-center relative overflow-hidden"
+                        style={{ background: "linear-gradient(135deg, rgba(249,115,22,0.25) 0%, rgba(245,158,11,0.15) 100%)", border: "1px solid rgba(249,115,22,0.3)", boxShadow: "0 0 40px rgba(249,115,22,0.2), inset 0 1px 0 rgba(255,180,60,0.2)" }}>
+                        <Crosshair size={38} strokeWidth={1.5} style={{ color: "#f97316" }} />
+                        {/* Inner glow */}
+                        <div className="absolute inset-0 rounded-2xl" style={{ background: "radial-gradient(circle at 40% 35%, rgba(249,115,22,0.3) 0%, transparent 60%)" }} />
+                      </div>
+                      {/* Orbit dot */}
+                      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+                        className="absolute inset-0 -m-2" style={{ transformOrigin: "center" }}>
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 w-2 h-2 rounded-full bg-orange-400"
+                          style={{ boxShadow: "0 0 6px #f97316" }} />
+                      </motion.div>
+                    </div>
 
-              {/* Exam stats strip */}
-              <div className="grid grid-cols-4 gap-3">
-                {[
-                  { value: "11,325", label: "Students appeared", icon: <TrendingUp size={15} className="text-pink-300" /> },
-                  { value: "16", label: "Exam shifts", icon: <Zap size={15} className="text-violet-300" /> },
-                  { value: "196", label: "Highest score", icon: <Trophy size={15} className="text-amber-300" /> },
-                  { value: "5.69%", label: "Avg scored 120+", icon: <Star size={15} className="text-cyan-300" /> },
-                ].map(({ value, label, icon }) => (
-                  <div key={label} className={`${glass} p-4 flex flex-col gap-1.5`}>
-                    <div className="flex items-center gap-1.5">{icon}<span className="text-xs text-white/30">{label}</span></div>
-                    <div className="text-2xl font-black text-white">{value}</div>
+                    <h1 className="text-6xl md:text-7xl font-black tracking-tighter leading-none">
+                      <span className="text-white">CET</span>
+                      <span style={{ background: "linear-gradient(135deg,#f97316 0%,#f59e0b 60%,#fbbf24 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}> Edge</span>
+                    </h1>
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="h-px w-8 bg-orange-400/30" />
+                      <p className="text-white/25 tracking-[0.35em] uppercase text-xs">MHT CET 2026 · Percentile Predictor</p>
+                      <div className="h-px w-8 bg-orange-400/30" />
+                    </div>
+
+                    <motion.button whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(249,115,22,0.4)" }} whileTap={{ scale: 0.97 }}
+                      onClick={() => { playSound(); setPage("shift"); }}
+                      className="mt-7 px-10 py-4 rounded-2xl font-black text-black flex items-center gap-2.5"
+                      style={{ background: "linear-gradient(135deg,#f97316,#f59e0b,#fbbf24)", boxShadow: "0 0 20px rgba(249,115,22,0.3)" }}>
+                      <Crosshair size={17} /> Begin Analysis <ChevronRight size={17} />
+                    </motion.button>
+
+                    <p className="mt-5 text-white/30 text-sm leading-relaxed max-w-sm">
+                      Enter your marks, select your shift and category — shift-level normalization, density correction, and 2025 CAP data predict your percentile instantly.
+                    </p>
                   </div>
-                ))}
+
+                  {/* Right: Live stats panel */}
+                  <div className="flex-shrink-0 w-full md:w-64 space-y-2.5">
+                    <div className="text-[9px] text-white/20 uppercase tracking-[0.3em] mb-3 text-center md:text-left">Live exam data</div>
+                    {[
+                      { label: "Total students", value: "11,325", sub: "PCM stream", color: "#f97316" },
+                      { label: "Exam shifts", value: "16", sub: "8 dates × 2 sessions", color: "#f59e0b" },
+                      { label: "Highest score", value: "196 / 200", sub: "Apr 16 Evening", color: "#38bdf8" },
+                      { label: "Scored 120+", value: "5.69%", sub: "avg across shifts", color: "#34d399" },
+                    ].map(({ label, value, sub, color }) => (
+                      <div key={label} className="flex items-center gap-3 p-3 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
+                        <div className="w-1 h-8 rounded-full flex-shrink-0" style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
+                        <div>
+                          <div className="font-black text-base text-white leading-tight">{value}</div>
+                          <div className="text-[10px] text-white/30">{label} · {sub}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Shift difficulty matrix */}
               <div className={`${glass} p-6`}>
                 <div className="flex items-center gap-2 mb-4">
-                  <BarChart3 size={15} className="text-pink-300" />
+                  <BarChart3 size={15} className="text-amber-400" />
                   <span className="font-black text-base">Shift Difficulty Overview</span>
                   <div className="ml-auto flex items-center gap-3 text-[10px]">
                     {[["Easy","bg-emerald-400"],["Moderate","bg-amber-400"],["Hard","bg-rose-400"]].map(([l,c])=>(
@@ -628,7 +682,7 @@ export default function RankPulse() {
               {/* Methodology */}
               <div className={`${glass} p-6 space-y-6`}>
                 <div className="flex items-center gap-2">
-                  <Sparkles size={15} className="text-pink-300" />
+                  <Sparkles size={15} className="text-amber-400" />
                   <span className="font-black text-base">How We Decide Your Percentile</span>
                 </div>
 
@@ -639,7 +693,7 @@ export default function RankPulse() {
                     {[
                       { sub: "Physics", max: 50, qs: "25 questions", marks: "2 per correct · −0 wrong", color: "from-blue-400/15 to-blue-400/5 border-blue-400/20", dot: "bg-blue-400" },
                       { sub: "Chemistry", max: 50, qs: "25 questions", marks: "2 per correct · −0 wrong", color: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/20", dot: "bg-emerald-400" },
-                      { sub: "Mathematics", max: 100, qs: "50 questions", marks: "2 per correct · −0 wrong", color: "from-pink-400/15 to-pink-400/5 border-pink-400/20", dot: "bg-pink-400" },
+                      { sub: "Mathematics", max: 100, qs: "50 questions", marks: "2 per correct · −0 wrong", color: "from-orange-400/15 to-orange-400/5 border-orange-400/20", dot: "bg-orange-400" },
                     ].map(({ sub, max, qs, marks, color, dot }) => (
                       <div key={sub} className={`p-4 rounded-2xl border bg-gradient-to-br ${color}`}>
                         <div className="flex items-center gap-2 mb-2">
@@ -719,7 +773,7 @@ export default function RankPulse() {
                       {
                         label: "SC / ST Category",
                         tag: "+0.25%ile",
-                        tagColor: "bg-violet-400/15 text-violet-300",
+                        tagColor: "bg-sky-400/15 text-sky-300",
                         desc: "Students from SC or ST categories receive a +0.25 percentile boost to reflect the lower effective cutoffs these categories see during CAP counselling.",
                       },
                       {
@@ -737,7 +791,7 @@ export default function RankPulse() {
                       {
                         label: "Percentile Cap",
                         tag: "Max 99.99",
-                        tagColor: "bg-pink-400/15 text-pink-300",
+                        tagColor: "bg-orange-400/15 text-orange-300",
                         desc: "The final percentile is capped at 99.99 regardless of marks. A score of 200/200 would correspond to ~99.99 across all shift difficulties.",
                       },
                     ].map(({ label, tag, tagColor, desc }) => (
@@ -758,12 +812,12 @@ export default function RankPulse() {
                 <div>
                   <div className="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">④ College Matching Logic</div>
                   <p className="text-xs text-white/35 mb-4 leading-relaxed">
-                    Each college in our database has a minimum predicted percentile threshold (<code className="text-pink-300/70 bg-white/[0.05] px-1 rounded">minP</code>) derived from its 2025 CAP Round 3 closing percentile with a small safety buffer.
+                    Each college in our database has a minimum predicted percentile threshold (<code className="text-amber-400/70 bg-white/[0.05] px-1 rounded">minP</code>) derived from its 2025 CAP Round 3 closing percentile with a small safety buffer.
                     Only colleges where your predicted percentile ≥ minP are shown — meaning every suggestion is one you have a realistic chance at.
                   </p>
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { tier: "Dream", color: "from-violet-500/15 to-violet-500/5 border-violet-400/25", badge: "text-violet-300", desc: "Top-tier colleges where your percentile meets the Round 1 cutoff. Aim here first." },
+                      { tier: "Dream", color: "from-orange-500/15 to-orange-500/5 border-orange-400/25", badge: "text-orange-300", desc: "Top-tier colleges where your percentile meets the Round 1 cutoff. Aim here first." },
                       { tier: "Strong", color: "from-blue-500/15 to-blue-500/5 border-blue-400/25", badge: "text-blue-300", desc: "Colleges where your percentile comfortably clears the Round 2/3 closing cutoff." },
                       { tier: "Safe", color: "from-emerald-500/15 to-emerald-500/5 border-emerald-400/25", badge: "text-emerald-300", desc: "Colleges where historical data shows seats available well into Round 3 at your level." },
                     ].map(({ tier, color, badge, desc }) => (
@@ -791,13 +845,13 @@ export default function RankPulse() {
               {/* How it works */}
               <div className={`${glass} p-6`}>
                 <div className="flex items-center gap-2 mb-5">
-                  <BookOpen size={15} className="text-pink-300" />
+                  <BookOpen size={15} className="text-amber-400" />
                   <span className="font-black text-base">How It Works</span>
                 </div>
                 <div className="grid grid-cols-4 gap-3">
                   {[
-                    { step: "1", title: "Pick your date", desc: "Select the exam date and morning or evening shift you appeared for", color: "from-pink-400/20 to-pink-400/5 border-pink-400/25" },
-                    { step: "2", title: "Choose category", desc: "Select your reservation category — we adjust the percentile accordingly", color: "from-violet-400/20 to-violet-400/5 border-violet-400/25" },
+                    { step: "1", title: "Pick your date", desc: "Select the exam date and morning or evening shift you appeared for", color: "from-orange-400/20 to-orange-400/5 border-orange-400/25" },
+                    { step: "2", title: "Choose category", desc: "Select your reservation category — we adjust the percentile accordingly", color: "from-amber-400/20 to-amber-400/5 border-amber-400/25" },
                     { step: "3", title: "Enter marks", desc: "Enter Physics (50), Chemistry (50) and Mathematics (100) marks", color: "from-blue-400/20 to-blue-400/5 border-blue-400/25" },
                     { step: "4", title: "Get prediction", desc: "Receive your percentile, rank range, and 30+ college suggestions instantly", color: "from-cyan-400/20 to-cyan-400/5 border-cyan-400/25" },
                   ].map(({ step, title, desc, color }) => (
@@ -814,12 +868,12 @@ export default function RankPulse() {
               <div className={`${glass} p-6`}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <GraduationCap size={15} className="text-pink-300" />
+                    <GraduationCap size={15} className="text-amber-400" />
                     <span className="font-black text-base">Top College Cutoffs</span>
                     <span className="text-[10px] text-white/25 ml-1">CAP Round 1 · 2025 data</span>
                   </div>
                   <button onClick={() => { playSound(); setPage("shift"); }}
-                    className="text-xs text-pink-300/60 hover:text-pink-300 flex items-center gap-1 transition-all">
+                    className="text-xs text-amber-400/60 hover:text-amber-400 flex items-center gap-1 transition-all">
                     See all 30+ <ChevronRight size={12} />
                   </button>
                 </div>
@@ -836,14 +890,14 @@ export default function RankPulse() {
                   ].map((c, i) => (
                     <motion.div key={i} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
                       className={`flex items-center justify-between p-3 rounded-xl border ${
-                        c.tier === "Dream" ? "bg-violet-500/8 border-violet-400/20" : "bg-blue-500/8 border-blue-400/20"
+                        c.tier === "Dream" ? "bg-orange-500/8 border-orange-400/20" : "bg-sky-500/8 border-sky-400/20"
                       }`}>
                       <div>
                         <div className="text-sm font-bold text-white/90">{c.name}</div>
                         <div className="text-[10px] text-white/35 mt-0.5">{c.branch} · {c.city}</div>
                       </div>
                       <div className="text-right">
-                        <div className={`text-sm font-black ${c.tier === "Dream" ? "text-violet-300" : "text-blue-300"}`}>{c.cap1}</div>
+                        <div className={`text-sm font-black ${c.tier === "Dream" ? "text-orange-300" : "text-sky-300"}`}>{c.cap1}</div>
                         <div className="text-[9px] text-white/20 mt-0.5">CAP 1 cutoff</div>
                       </div>
                     </motion.div>
@@ -939,7 +993,7 @@ export default function RankPulse() {
                   ].map(({ id, sub }) => (
                     <motion.button key={id} whileHover={{ y: -2, scale: 1.03 }} whileTap={{ scale: 0.97 }}
                       onClick={() => { playSound(); setCategory(id); setPage("marks"); }}
-                      className="p-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] hover:border-pink-400/30 hover:bg-pink-400/8 transition-all flex flex-col items-center gap-0.5">
+                      className="p-4 rounded-2xl border border-white/[0.08] bg-white/[0.04] hover:border-orange-400/30 hover:bg-orange-400/8 transition-all flex flex-col items-center gap-0.5">
                       <div className="font-black text-lg">{id}</div>
                       <div className="text-[10px] text-white/25">{sub}</div>
                     </motion.button>
@@ -961,7 +1015,7 @@ export default function RankPulse() {
                   {([
                     { label: "Physics", value: physics, setter: setPhysics, max: 50, color: "from-blue-400 to-cyan-400", bg: "border-blue-400/20" },
                     { label: "Chemistry", value: chemistry, setter: setChemistry, max: 50, color: "from-emerald-400 to-teal-400", bg: "border-emerald-400/20" },
-                    { label: "Mathematics", value: maths, setter: setMaths, max: 100, color: "from-pink-400 to-violet-400", bg: "border-pink-400/20" },
+                    { label: "Mathematics", value: maths, setter: setMaths, max: 100, color: "from-orange-400 to-amber-400", bg: "border-orange-400/20" },
                   ] as const).map(({ label, value, setter, max, color, bg }) => (
                     <motion.div key={label} whileHover={{ y: -2 }} className={`p-5 rounded-2xl border bg-white/[0.03] ${bg}`}>
                       <div className="flex items-center justify-between mb-3">
@@ -1014,11 +1068,11 @@ export default function RankPulse() {
             <motion.div key="loading" {...pageVariants}>
               <div className={`${glass} p-20 flex flex-col items-center text-center`}>
                 <div className="relative w-20 h-20 mb-7">
-                  <div className="absolute inset-0 rounded-full border-2 border-pink-400/20" />
-                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-pink-400 animate-spin" />
-                  <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-violet-400 animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
+                  <div className="absolute inset-0 rounded-full border-2 border-orange-400/20" />
+                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-orange-400 animate-spin" />
+                  <div className="absolute inset-2 rounded-full border-2 border-transparent border-t-amber-400 animate-spin" style={{ animationDirection: "reverse", animationDuration: "1.5s" }} />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <BrainCircuit size={20} className="text-pink-300 animate-pulse" />
+                    <Crosshair size={20} className="text-orange-400 animate-pulse" />
                   </div>
                 </div>
                 <AnimatePresence mode="wait">
@@ -1028,7 +1082,7 @@ export default function RankPulse() {
                 </AnimatePresence>
                 <div className="mt-5 flex gap-1.5">
                   {[0, 1, 2].map((i) => (
-                    <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-pink-400/40"
+                    <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-orange-400/40"
                       animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2 }} />
                   ))}
                 </div>
@@ -1051,7 +1105,7 @@ export default function RankPulse() {
                   {[
                     { label: "Physics", value: physics, max: 50, color: "from-blue-400 to-cyan-400" },
                     { label: "Chemistry", value: chemistry, max: 50, color: "from-emerald-400 to-teal-400" },
-                    { label: "Math", value: maths, max: 100, color: "from-pink-400 to-violet-400" },
+                    { label: "Math", value: maths, max: 100, color: "from-orange-400 to-amber-400" },
                   ].map(({ label, value, max, color }) => (
                     <div key={label} className="text-center">
                       <div className="text-[10px] text-white/25 mb-1.5">{label}</div>
@@ -1107,7 +1161,7 @@ export default function RankPulse() {
                           <div className="flex flex-wrap gap-1">
                             {cities.map((c) => (
                               <button key={c} onClick={() => setCityFilter(c)}
-                                className={`px-2.5 py-1 rounded-lg transition-all text-[11px] ${cityFilter === c ? "bg-pink-400/20 text-pink-300 border border-pink-400/30" : "text-white/30 hover:text-white/60"}`}>{c}</button>
+                                className={`px-2.5 py-1 rounded-lg transition-all text-[11px] ${cityFilter === c ? "bg-orange-400/20 text-orange-300 border border-orange-400/30" : "text-white/30 hover:text-white/60"}`}>{c}</button>
                             ))}
                           </div>
                         </div>
@@ -1116,7 +1170,7 @@ export default function RankPulse() {
                           <div className="flex flex-wrap gap-1">
                             {branches.map((b) => (
                               <button key={b} onClick={() => setBranchFilter(b)}
-                                className={`px-2.5 py-1 rounded-lg transition-all text-[11px] ${branchFilter === b ? "bg-violet-400/20 text-violet-300 border border-violet-400/30" : "text-white/30 hover:text-white/60"}`}>{b}</button>
+                                className={`px-2.5 py-1 rounded-lg transition-all text-[11px] ${branchFilter === b ? "bg-amber-400/20 text-amber-300 border border-amber-400/30" : "text-white/30 hover:text-white/60"}`}>{b}</button>
                             ))}
                           </div>
                         </div>
@@ -1196,10 +1250,10 @@ export default function RankPulse() {
               <div className={`${glass} p-7`}>
                 <div className="flex items-center justify-between mb-7">
                   <div className="flex items-center gap-2 text-xl font-black">
-                    <History size={18} className="text-pink-300" /> Prediction History
+                    <History size={18} className="text-amber-400" /> Prediction History
                   </div>
                   {history.length > 0 && (
-                    <button onClick={() => { localStorage.removeItem("rankpulse-v2-history"); setHistory([]); }}
+                    <button onClick={() => { localStorage.removeItem("cetedge-v1-history"); setHistory([]); }}
                       className="flex items-center gap-1.5 text-rose-400/50 hover:text-rose-400 text-xs transition-all">
                       <Trash2 size={12} /> Clear all
                     </button>
@@ -1216,7 +1270,7 @@ export default function RankPulse() {
                         className="p-4 rounded-2xl border border-white/[0.06] bg-white/[0.03]">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400/15 to-violet-400/15 border border-white/[0.08] flex items-center justify-center text-xs font-black text-pink-300">#{i + 1}</div>
+                            <div className="w-10 h-10 rounded-xl border border-white/[0.08] flex items-center justify-center text-xs font-black text-orange-300" style={{ background: "linear-gradient(135deg,rgba(249,115,22,0.15),rgba(245,158,11,0.1))" }}>#{i + 1}</div>
                             <div>
                               <div className="text-xl font-black">{h.percentile}<span className="text-xs text-white/25 ml-1">%ile</span></div>
                               <div className="text-xs text-white/25 mt-0.5">{h.shift}</div>
@@ -1229,7 +1283,7 @@ export default function RankPulse() {
                         </div>
                         {h.physics !== undefined && (
                           <div className="mt-3 flex gap-3">
-                            {[{ l: "Phy", v: h.physics, max: 50, c: "bg-blue-400" }, { l: "Chem", v: h.chemistry, max: 50, c: "bg-emerald-400" }, { l: "Math", v: h.maths, max: 100, c: "bg-pink-400" }].map(({ l, v, max, c }) => (
+                            {[{ l: "Phy", v: h.physics, max: 50, c: "bg-sky-400" }, { l: "Chem", v: h.chemistry, max: 50, c: "bg-emerald-400" }, { l: "Math", v: h.maths, max: 100, c: "bg-orange-400" }].map(({ l, v, max, c }) => (
                               <div key={l} className="flex-1">
                                 <div className="flex justify-between text-[10px] text-white/25 mb-1"><span>{l}</span><span>{v}</span></div>
                                 <div className="h-0.5 rounded-full bg-white/[0.05]"><div className={`h-full rounded-full ${c} opacity-50`} style={{ width: `${(v / max) * 100}%` }} /></div>
