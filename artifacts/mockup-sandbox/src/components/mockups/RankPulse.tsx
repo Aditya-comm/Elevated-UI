@@ -113,19 +113,21 @@ const ALL_COLLEGES: College[] = [
 
 // ─── Rank–Percentile Table ────────────────────────────────────────────────────
 
+// Rank calibrated to ~4,32,000 total PCM candidates (MHT CET 2025)
+// Anchor: VJTI CS closed rank 216 at 99.95%ile → N = 216 / 0.0005 = 4,32,000
 const RANK_TABLE = [
-  { percentile: "99.90 – 99.99", rank: "< 200",     category: "Top" },
-  { percentile: "99.80 – 99.90", rank: "200 – 400",  category: "Top" },
-  { percentile: "99.60 – 99.80", rank: "400 – 900",  category: "Top" },
-  { percentile: "99.40 – 99.60", rank: "900 – 1.5k", category: "Top" },
-  { percentile: "99.00 – 99.40", rank: "1.5k – 2.5k",category: "High" },
-  { percentile: "98.50 – 99.00", rank: "2.5k – 4k",  category: "High" },
-  { percentile: "98.00 – 98.50", rank: "4k – 6k",    category: "High" },
-  { percentile: "97.00 – 98.00", rank: "6k – 10k",   category: "Good" },
-  { percentile: "95.00 – 97.00", rank: "10k – 18k",  category: "Good" },
-  { percentile: "90.00 – 95.00", rank: "18k – 40k",  category: "Mid" },
-  { percentile: "80.00 – 90.00", rank: "40k – 90k",  category: "Mid" },
-  { percentile: "Below 80.00",   rank: "90k+",       category: "Low" },
+  { percentile: "99.90 – 99.99", rank: "< 450",          category: "Top" },
+  { percentile: "99.80 – 99.90", rank: "450 – 900",       category: "Top" },
+  { percentile: "99.60 – 99.80", rank: "900 – 1,750",     category: "Top" },
+  { percentile: "99.40 – 99.60", rank: "1,750 – 2,600",   category: "Top" },
+  { percentile: "99.00 – 99.40", rank: "2,600 – 4,400",   category: "High" },
+  { percentile: "98.50 – 99.00", rank: "4,400 – 6,500",   category: "High" },
+  { percentile: "98.00 – 98.50", rank: "6,500 – 8,700",   category: "High" },
+  { percentile: "97.00 – 98.00", rank: "8,700 – 13,000",  category: "Good" },
+  { percentile: "95.00 – 97.00", rank: "13,000 – 22,000", category: "Good" },
+  { percentile: "90.00 – 95.00", rank: "22,000 – 43,500", category: "Mid" },
+  { percentile: "80.00 – 90.00", rank: "43,500 – 87,000", category: "Mid" },
+  { percentile: "Below 80.00",   rank: "87,000+",          category: "Low" },
 ];
 
 // ─── Percentile Engine ────────────────────────────────────────────────────────
@@ -170,15 +172,20 @@ function calcPercentile(total: number, shiftData: ShiftInfo, category: string): 
   return Math.min(base, 99.99);
 }
 
+// ~4,32,000 total PCM candidates — rank = (1 - p/100) × 4,32,000
 function getRank(p: number): string {
-  if (p >= 99.8) return "< 400";
-  if (p >= 99.5) return "400 – 1k";
-  if (p >= 99.0) return "1k – 2.5k";
-  if (p >= 98.5) return "2.5k – 4k";
-  if (p >= 98.0) return "4k – 6k";
-  if (p >= 97.0) return "6k – 10k";
-  if (p >= 95.0) return "10k – 18k";
-  return "18k+";
+  if (p >= 99.90) return "< 450";
+  if (p >= 99.80) return "450 – 900";
+  if (p >= 99.60) return "900 – 1,750";
+  if (p >= 99.40) return "1,750 – 2,600";
+  if (p >= 99.00) return "2,600 – 4,400";
+  if (p >= 98.50) return "4,400 – 6,500";
+  if (p >= 98.00) return "6,500 – 8,700";
+  if (p >= 97.00) return "8,700 – 13,000";
+  if (p >= 95.00) return "13,000 – 22,000";
+  if (p >= 90.00) return "22,000 – 43,500";
+  if (p >= 80.00) return "43,500 – 87,000";
+  return "87,000+";
 }
 
 function getQuote(p: number): string {
