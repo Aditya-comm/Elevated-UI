@@ -169,7 +169,7 @@ function calcPercentile(total: number, shiftData: ShiftInfo, category: string): 
   if (category === "VJNT") base += 0.12;
   if (shiftData.above120 < 5) base += 0.15;
 
-  return Math.min(base, 99.99);
+  return Math.min(base - 0.1, 99.99);
 }
 
 // ~4,32,000 total PCM candidates — rank = (1 - p/100) × 4,32,000
