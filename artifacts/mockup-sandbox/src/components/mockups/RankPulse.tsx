@@ -547,6 +547,11 @@ export default function RankPulse() {
                   style={{ background: "linear-gradient(135deg,#f9a8d4,#c4b5fd,#67e8f9)" }}>
                   <Sparkles size={17} /> Begin Analysis <ChevronRight size={17} />
                 </motion.button>
+
+                {/* 30-40 word description */}
+                <p className="mt-5 text-white/35 text-sm leading-relaxed max-w-lg">
+                  Enter your MHT CET 2026 marks, select your shift and category — we apply shift-level normalization, density correction, and 2025 CAP data to predict your percentile and matching colleges instantly.
+                </p>
               </div>
 
               {/* Exam stats strip */}
@@ -601,6 +606,169 @@ export default function RankPulse() {
                   ))}
                 </div>
                 <p className="text-[10px] text-white/20 mt-3">Hover each cell for full shift stats · % = students who scored 120+</p>
+              </div>
+
+              {/* Methodology */}
+              <div className={`${glass} p-6 space-y-6`}>
+                <div className="flex items-center gap-2">
+                  <Sparkles size={15} className="text-pink-300" />
+                  <span className="font-black text-base">How We Decide Your Percentile</span>
+                </div>
+
+                {/* Score structure */}
+                <div>
+                  <div className="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">① Score Structure</div>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { sub: "Physics", max: 50, qs: "25 questions", marks: "2 per correct · −0 wrong", color: "from-blue-400/15 to-blue-400/5 border-blue-400/20", dot: "bg-blue-400" },
+                      { sub: "Chemistry", max: 50, qs: "25 questions", marks: "2 per correct · −0 wrong", color: "from-emerald-400/15 to-emerald-400/5 border-emerald-400/20", dot: "bg-emerald-400" },
+                      { sub: "Mathematics", max: 100, qs: "50 questions", marks: "2 per correct · −0 wrong", color: "from-pink-400/15 to-pink-400/5 border-pink-400/20", dot: "bg-pink-400" },
+                    ].map(({ sub, max, qs, marks, color, dot }) => (
+                      <div key={sub} className={`p-4 rounded-2xl border bg-gradient-to-br ${color}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-2 h-2 rounded-full ${dot}`} />
+                          <span className="text-sm font-black">{sub}</span>
+                          <span className="ml-auto text-xs font-black text-white/60">{max} marks</span>
+                        </div>
+                        <div className="text-[11px] text-white/40">{qs}</div>
+                        <div className="text-[11px] text-white/30 mt-0.5">{marks}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                    <div className="text-xs text-white/35">Total marks:</div>
+                    <div className="font-black text-white">200</div>
+                    <div className="text-white/20 text-xs">·</div>
+                    <div className="text-xs text-white/35">No negative marking</div>
+                    <div className="text-white/20 text-xs">·</div>
+                    <div className="text-xs text-white/35">PCM (Physics + Chemistry + Mathematics)</div>
+                  </div>
+                </div>
+
+                {/* Difficulty curves */}
+                <div>
+                  <div className="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">② Shift Difficulty Normalization</div>
+                  <p className="text-xs text-white/35 mb-4 leading-relaxed">
+                    Each shift has a different difficulty, so the same raw marks produce different percentiles depending on which shift you appeared in.
+                    We model three separate piecewise curves — one per difficulty level — calibrated to 2025 MHT CET normalization patterns.
+                  </p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {([
+                      { diff: "Hard", color: "border-rose-400/25 bg-rose-400/8", badge: "bg-rose-400/20 text-rose-300", rows: [
+                        ["150+", "99.86 base"],["140–149","99.55 base"],["130–139","99.15 base"],["120–129","98.70 base"],["110–119","97.80 base"],["100–109","96.60 base"],["90–99","94.90 base"],["< 90","80 + linear"],
+                      ]},
+                      { diff: "Moderate", color: "border-amber-400/25 bg-amber-400/8", badge: "bg-amber-400/20 text-amber-300", rows: [
+                        ["150+","99.76 base"],["140–149","99.42 base"],["130–139","98.98 base"],["120–129","98.42 base"],["110–119","97.45 base"],["100–109","96.20 base"],["90–99","94.50 base"],["< 90","79 + linear"],
+                      ]},
+                      { diff: "Easy", color: "border-emerald-400/25 bg-emerald-400/8", badge: "bg-emerald-400/20 text-emerald-300", rows: [
+                        ["150+","99.68 base"],["140–149","99.30 base"],["130–139","98.78 base"],["120–129","98.05 base"],["110–119","97.00 base"],["100–109","95.60 base"],["90–99","93.60 base"],["< 90","78 + linear"],
+                      ]},
+                    ] as const).map(({ diff, color, badge, rows }) => (
+                      <div key={diff} className={`rounded-2xl border p-4 ${color}`}>
+                        <div className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold mb-3 ${badge}`}>{diff} Shift</div>
+                        <table className="w-full">
+                          <thead>
+                            <tr className="text-[9px] text-white/25 uppercase">
+                              <th className="text-left pb-1.5">Marks</th>
+                              <th className="text-right pb-1.5">Percentile</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rows.map(([marks, pct]) => (
+                              <tr key={marks} className="border-t border-white/[0.04]">
+                                <td className="text-[11px] text-white/50 py-1 font-mono">{marks}</td>
+                                <td className="text-[11px] text-white/70 py-1 text-right font-mono">{pct}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <p className="text-[9px] text-white/20 mt-2">+slope per mark within bracket</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Adjustments */}
+                <div>
+                  <div className="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">③ Adjustments Applied on Top</div>
+                  <div className="space-y-2">
+                    {[
+                      {
+                        label: "Density Correction",
+                        tag: "Automatic",
+                        tagColor: "bg-cyan-400/15 text-cyan-300",
+                        desc: "If fewer than 5% of students in your shift scored 120+, it signals an unusually hard paper relative to its assigned difficulty. We add +0.15 percentile to compensate for under-normalisation.",
+                      },
+                      {
+                        label: "SC / ST Category",
+                        tag: "+0.25%ile",
+                        tagColor: "bg-violet-400/15 text-violet-300",
+                        desc: "Students from SC or ST categories receive a +0.25 percentile boost to reflect the lower effective cutoffs these categories see during CAP counselling.",
+                      },
+                      {
+                        label: "VJNT Category",
+                        tag: "+0.12%ile",
+                        tagColor: "bg-blue-400/15 text-blue-300",
+                        desc: "VJNT (Vimukta Jati & Nomadic Tribes) students receive a +0.12 percentile adjustment based on observed CAP round cutoff differentials from 2025 data.",
+                      },
+                      {
+                        label: "OBC / EWS / OPEN",
+                        tag: "+0.00%ile",
+                        tagColor: "bg-white/10 text-white/40",
+                        desc: "No adjustment is applied. The base curve already reflects OPEN category normalisation which serves as the reference for all other adjustments.",
+                      },
+                      {
+                        label: "Percentile Cap",
+                        tag: "Max 99.99",
+                        tagColor: "bg-pink-400/15 text-pink-300",
+                        desc: "The final percentile is capped at 99.99 regardless of marks. A score of 200/200 would correspond to ~99.99 across all shift difficulties.",
+                      },
+                    ].map(({ label, tag, tagColor, desc }) => (
+                      <div key={label} className="flex gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.05]">
+                        <div className="flex-shrink-0 pt-0.5">
+                          <div className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${tagColor}`}>{tag}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-bold text-white/80 mb-0.5">{label}</div>
+                          <div className="text-[11px] text-white/35 leading-relaxed">{desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* College matching */}
+                <div>
+                  <div className="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">④ College Matching Logic</div>
+                  <p className="text-xs text-white/35 mb-4 leading-relaxed">
+                    Each college in our database has a minimum predicted percentile threshold (<code className="text-pink-300/70 bg-white/[0.05] px-1 rounded">minP</code>) derived from its 2025 CAP Round 3 closing percentile with a small safety buffer.
+                    Only colleges where your predicted percentile ≥ minP are shown — meaning every suggestion is one you have a realistic chance at.
+                  </p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { tier: "Dream", color: "from-violet-500/15 to-violet-500/5 border-violet-400/25", badge: "text-violet-300", desc: "Top-tier colleges where your percentile meets the Round 1 cutoff. Aim here first." },
+                      { tier: "Strong", color: "from-blue-500/15 to-blue-500/5 border-blue-400/25", badge: "text-blue-300", desc: "Colleges where your percentile comfortably clears the Round 2/3 closing cutoff." },
+                      { tier: "Safe", color: "from-emerald-500/15 to-emerald-500/5 border-emerald-400/25", badge: "text-emerald-300", desc: "Colleges where historical data shows seats available well into Round 3 at your level." },
+                    ].map(({ tier, color, badge, desc }) => (
+                      <div key={tier} className={`p-4 rounded-2xl border bg-gradient-to-br ${color}`}>
+                        <div className={`text-sm font-black mb-2 ${badge}`}>{tier}</div>
+                        <div className="text-[11px] text-white/40 leading-relaxed">{desc}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+                    <div className="text-[11px] text-white/30 leading-relaxed">
+                      <span className="text-white/50 font-semibold">CAP Round data source:</span> 2025 Maharashtra State CET Cell official closing percentiles for OPEN category. SC/ST/VJNT/OBC cutoffs are typically 8–15 percentile points lower — use the What-if Simulator after predicting to find your adjusted range.
+                    </div>
+                  </div>
+                </div>
+
+                {/* Disclaimer */}
+                <div className="p-4 rounded-2xl border border-white/[0.05] bg-white/[0.02]">
+                  <div className="text-[11px] text-white/25 leading-relaxed">
+                    <span className="text-white/40 font-semibold">Accuracy note —</span> This tool uses piecewise linear interpolation of 2025 normalisation data. Actual 2026 percentiles may differ based on total candidate count, paper moderation decisions, and NTA normalisation methodology changes. Treat predictions as estimates within ±1–2 percentile points.
+                  </div>
+                </div>
               </div>
 
               {/* How it works */}
