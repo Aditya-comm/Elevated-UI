@@ -642,7 +642,8 @@ export default function RankPulse() {
                         value={value || ""}
                         placeholder="0"
                         onChange={(e) => handleMarks(Number(e.target.value), setter, max)}
-                        className="bg-transparent outline-none text-5xl font-black w-full placeholder-white/10"
+                        className="outline-none text-5xl font-black w-full placeholder-white/10 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        style={{ background: "transparent", color: "white", WebkitTextFillColor: "white" }}
                       />
                       <div className="mt-4 relative">
                         <div className="w-full h-1.5 rounded-full bg-white/5">
